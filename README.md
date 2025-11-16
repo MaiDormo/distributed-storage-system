@@ -265,27 +265,6 @@ DataStoreManager.initialize(N, W, R);
 - **Load Distribution**: Even key distribution via hashing
 - **Fault Tolerance**: System operates with up to (N-W) node failures
 
-## Troubleshooting
-
-### Common Issues
-
-**Nodes Not Responding**
-```bash
-# Check node status
-> status
-
-# Verify network connectivity
-> nodes
-```
-
-**Timeout Errors**
-- Adjust timeout values in `TimeoutDelay.java`
-- Check system load and message delays
-
-**Inconsistent Reads**
-- Verify R + W > N for strong consistency
-- Check for network partitions or node failures
-
 ## Technical Documentation
 
 ### Consistency Model
