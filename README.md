@@ -1,8 +1,8 @@
 # Distributed Storage System
 
-A p2p key-value storage system implementation using the Actor model with Akka. This system provides distributed data storage with configurable replication, consistency guarantees, and failure handling capabilities.
+A peer-to-peer key-value storage system implementation using the Actor model with Akka. This system provides distributed data storage with configurable replication, consistency guarantees, and failure handling capabilities.
 
-## 🏗️ System Architecture
+## System Architecture
 
 The system implements a distributed storage system with the following key features:
 
@@ -33,14 +33,14 @@ src/main/java/it/unitn/ds1/
 └── Main.java                # Basic demo application
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
 - Java 21 or higher
-- Gradle 9.0 was used
+- Gradle 9.0 or higher
 
-### Running the System
+### Building and Running
 
 ```bash
 # Build the project
@@ -55,142 +55,163 @@ gradle run --console=plain
 # - it.unitn.ds1.Main (basic demo scenarios)
 ```
 
-### Running Tests
+### Building and Running
 
 ```bash
-# Run with interactive test framework (default)
-gradle run
+# Build the project
+gradle build
 
-# Run large-scale automated tests
-# Edit build.gradle to uncomment: mainClassName = "it.unitn.ds1.test.LargeScaleTest"
-gradle run
+# Run interactive testing framework (recommended)
+gradle run --console=plain
 
-# Run basic demo
-# Edit build.gradle to uncomment: mainClassName = "it.unitn.ds1.Main"
-gradle run
+# Alternative: Run specific main classes by editing build.gradle
+# - it.unitn.ds1.test.InteractiveTest (default - interactive testing)
+# - it.unitn.ds1.test.LargeScaleTest (automated large-scale tests)  
+# - it.unitn.ds1.Main (basic demo scenarios)
 ```
 
-## 🎯 Key Features
+## Key Features
 
-### 1. Distributed Key-Value Storage
+### Distributed Key-Value Storage
 
 - **N Replication**: Keys are distributed across N nodes using consistent hashing
 - **Versioned Values**: Each value is versioned to handle concurrent updates
 - **Atomic Operations**: Read and write operations are atomic at the key level
 
-### 2. Configurable Consistency Model
+### Configurable Consistency Model
 
 The system uses N/W/R parameters:
 
-- **N**: Total number of replicas per key
-- **W**: Number of nodes that must acknowledge a write
-- **R**: Number of nodes that must respond to a read
+- **N**: Total number of replicas per key (default: 3)
+- **W**: Number of nodes that must acknowledge a write (default: 2)
+- **R**: Number of nodes that must respond to a read (default: 2)
 
-Default configuration: N=3, W=2, R=2 (strong consistency)
+Default configuration provides strong consistency with R + W > N.
 
-### 3. Fault Tolerance
+### Fault Tolerance
 
-- **Node Crashes**: System continues operating when nodes fail (at least one has to remain alive)
+- **Node Crashes**: System continues operating when nodes fail
 - **Network Partitions**: Handles network splits gracefully
-- **Timeout Handling**: Client and node timeouts for unresponsive operations
+- **Timeout Handling**: Configurable timeouts for operations
 - **Recovery**: Crashed nodes can rejoin and synchronize data
 
-### 4. Dynamic Membership
+### Dynamic Membership
 
 - **Join Protocol**: New nodes can join the network dynamically
 - **Leave Protocol**: Nodes can gracefully leave, transferring their data
 - **Data Repartitioning**: Automatic data redistribution on membership changes
 
-## 🧪 Interactive Testing Framework
+## Interactive Testing Framework
 
-The system includes a comprehensive interactive testing framework accessible via [`InteractiveTest.java`](src/main/java/it/unitn/ds1/test/InteractiveTest.java):
+The system includes a comprehensive interactive testing framework accessible via `InteractiveTest.java`.
 
-### Available Commands
+### Command Reference
+
+#### System Information
 
 ```bash
-# System Information
+### Command Reference
+
+#### System Information
+```bash
 help, h                  # Show help message
 status, s                # Show system status  
 nodes                    # List all nodes and their states
 clients                  # List all clients
 data                     # Show data distribution
+```
 
-# Basic Operations
+#### Basic Operations
+```bash
 get <key> [nodeId] [clientId]         # Read value for key
 put <key> <value> [nodeId] [clientId] # Store key-value pair
+```
 
-# Node Management  
+#### Node Management
+```bash
 addnode [nodeId]         # Add a new node to the system
 removenode <nodeId>      # Remove a node from the system
 crash <nodeId>           # Crash a specific node
 recover <nodeId> [peerNodeId] # Recover a crashed node
 join <nodeId> <peerNodeId>    # Join a node via bootstrap peer
 leave <nodeId>           # Node graceful departure
+```
 
-# Client Management
+#### Client Management
+```bash
 addclient                # Add a new client actor
 removeclient <clientId>  # Remove a client actor
+```
 
-# Testing Scenarios
+#### Testing Scenarios
+```bash
 test basic               # Test basic CRUD operations
-test quorum             # Test quorum behavior with failures
+test quorum              # Test quorum behavior with failures
 test concurrency        # Test concurrent operations
 test consistency        # Test data consistency across nodes
 test membership         # Test join/leave operations
 test partition          # Test network partition scenarios
 test recovery           # Test crash recovery scenarios
-test edge-cases         # Test edge cases and error conditions
-test timeout            # Test client timeout scenarios
-
-# Performance Testing
-benchmark <operations>   # Run performance benchmark
-stress <duration>        # Run stress test for specified seconds
-
-# System Control
-reset                    # Reset entire system to initial state
-clear                    # Clear screen
-quit, exit, q           # Exit the system
+test edge-cases          # Test edge cases and error conditions
+test timeout             # Test client timeout scenarios
 ```
 
-### System Initialization
+#### Performance Testing
+```bash
+benchmark <operations>   # Run performance benchmark
+stress <duration>        # Run stress test for specified seconds
+```
 
-The system automatically initializes with default configuration (N=3, W=2, R=2) when started. The configuration is managed by [`DataStoreManager`](src/main/java/it/unitn/ds1/DataStoreManager.java) and cannot be changed at runtime.
+#### System Control
+```bash
+reset                    # Reset entire system to initial state
+clear                    # Clear screen
+quit, exit, q            # Exit the system
+```
 
-## 📊 System Parameters
+## Configuration
 
-### Default Configuration
+### System Parameters
+
+Configuration is managed by `DataStoreManager` and set at system initialization:
 
 ```java
-// DataStoreManager defaults (from DataStoreManager.getInstance())
+Configuration is managed by `DataStoreManager` and set at system initialization:
+
+```java
+// Default configuration
 N = 3  // Number of replicas
 W = 2  // Write quorum size  
 R = 2  // Read quorum size
 ```
+```
 
 ### Timeout Configuration
 
-Timeouts are compile-time constants defined in [`TimeoutDelay.java`](src/main/java/it/unitn/ds1/utils/TimeoutDelay.java) and [`OperationDelays.java`](src/main/java/it/unitn/ds1/utils/OperationDelays.java):
+Timeouts are defined in `TimeoutDelay.java`:
 
 ```java
-// From TimeoutDelay.java - these are static final constants
 CLIENT_GET_DELAY = BASE_DELAY * 4.5      // ~2025ms
 CLIENT_UPDATE_DELAY = BASE_DELAY * 4.75  // ~2137ms  
 JOIN_DELAY = BASE_DELAY * 6.2            // ~2790ms
 ```
 
-### Logging Configuration
+### Logging
 
-The system uses Logback for structured logging. Configuration in `src/main/resources/logback.xml`:
+The system uses Logback for structured logging. Configuration can be modified in `src/main/resources/logback.xml` to adjust log levels for different components:
 
 ```xml
-<!-- Configurable log levels per component -->
+The system uses Logback for structured logging. Configuration can be modified in `src/main/resources/logback.xml` to adjust log levels for different components:
+
 - StorageNode operations
 - Client requests and responses  
 - System membership changes
 - Error conditions and timeouts
+
+## Performance Characteristics
 ```
 
-## 🔧 Advanced Usage
+## Advanced Usage
 
 ### Custom Test Scenarios
 
@@ -224,7 +245,7 @@ DataStoreManager.initialize(3, 1, 1);
 DataStoreManager.initialize(N, W, R);
 ```
 
-## 📈 Performance Characteristics
+## Performance Characteristics
 
 ### Throughput
 
@@ -242,50 +263,55 @@ DataStoreManager.initialize(N, W, R);
 
 - **Horizontal Scaling**: Add nodes dynamically
 - **Load Distribution**: Even key distribution via hashing
-- **Fault Tolerance**: System operates with (N-W+1) node failures
+- **Fault Tolerance**: System operates with up to (N-W) node failures
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
-1. **Nodes Not Responding**
+**Nodes Not Responding**
+```bash
+# Check node status
+> status
 
-   ```bash
-   # Check node status
-   > status
-   
-   # Verify network connectivity
-   > nodes
-   ```
+# Verify network connectivity
+> nodes
+```
 
-2. **Timeout Errors**
+**Timeout Errors**
+- Adjust timeout values in `TimeoutDelay.java`
+- Check system load and message delays
 
-   ```bash
-   # Adjust timeout values in TimeoutDelay.java
-   # Check system load and delays
-   ```
+**Inconsistent Reads**
+- Verify R + W > N for strong consistency
+- Check for network partitions or node failures
 
-3. **Inconsistent Reads**
+## Technical Documentation
 
-   ```bash
-   # Verify R >= W/2 + 1 for strong consistency
-   # Check for network partitions
-   ```
+### Consistency Model
 
-## 📚 References
+The system implements a quorum-based consistency model where:
+- Strong consistency: R + W > N
+- Eventual consistency: R + W ≤ N
 
-- **Akka Documentation**: [https://akka.io/docs/](https://akka.io/docs/)
-- **Distributed Systems Concepts**: Consistency, Availability, Replication, Fault Tolerance, Sequential Consistency, Quorum, Concurrency.
+### Data Distribution
 
-## 🤝 Contributing
+Keys are distributed using consistent hashing:
+1. Find the first node with ID ≥ key
+2. Select N consecutive nodes starting from that position
+3. Handle wrap-around for ring topology
 
-This is an academic project for distributed systems coursework. The implementation demonstrates:
+### Concurrency Control
 
-- Actor model programming with Akka
-- Distributed consensus and consistency protocols  
-- Fault tolerance and recovery mechanisms
-- Performance testing and evaluation methodologies
+Two-level locking mechanism:
+- **Coordinator Level**: Prevents conflicting operations on the same key
+- **Replica Level**: Controls concurrent access at individual replicas (reader-writer semantics)
 
-## 📄 License
+## References
 
-Academic project - do whatever you please
+- Akka Documentation: https://akka.io/docs/
+- Distributed Systems Concepts: Consistency, Availability, Partition Tolerance, Quorum Systems
+
+## License
+
+Academic project for distributed systems coursework.
