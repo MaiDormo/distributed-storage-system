@@ -110,10 +110,6 @@ The system includes a comprehensive interactive testing framework accessible via
 #### System Information
 
 ```bash
-### Command Reference
-
-#### System Information
-```bash
 help, h                  # Show help message
 status, s                # Show system status  
 nodes                    # List all nodes and their states
