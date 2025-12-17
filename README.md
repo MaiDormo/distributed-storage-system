@@ -176,14 +176,10 @@ quit, exit, q            # Exit the system
 Configuration is managed by `DataStoreManager` and set at system initialization:
 
 ```java
-Configuration is managed by `DataStoreManager` and set at system initialization:
-
-```java
 // Default configuration
 N = 3  // Number of replicas
 W = 2  // Write quorum size  
 R = 2  // Read quorum size
-```
 ```
 
 ### Timeout Configuration
